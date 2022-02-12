@@ -1,0 +1,2 @@
+[some_group]
+node ansible_host=x.x.x.x

@@ -1,0 +1,12 @@
+---
+
+- hosts: <your_hosts>
+  become: yes
+
+  roles:
+    - prom
+    - nodeexporter
+    - ufw
+    - telegraf
+    - blackbox  
+    - alertmanager
