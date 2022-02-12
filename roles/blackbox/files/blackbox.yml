@@ -1,0 +1,25 @@
+modules:
+  https_2xx:
+    prober: http
+    http:
+      preferred_ip_protocol: "ip4"
+  icmp:
+    prober: icmp
+    icmp:
+      preferred_ip_protocol: "ip4"
+  dns:
+    prober: dns
+    dns:
+      query_name: "cloudflare.com"
+      query_type: "ANY"
+      preferred_ip_protocol: "ip4"
+
+  ssh_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - expect: "^SSH-2.0-"
+
+  tcp_connect:
+    prober: tcp
+

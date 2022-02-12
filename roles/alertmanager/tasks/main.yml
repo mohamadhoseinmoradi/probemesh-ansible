@@ -1,0 +1,82 @@
+---
+
+    - name: "Creating alertmanager user group"
+      group: name="{{group_id}}"
+
+    - name: "Creating alertmanager user"
+      user:
+        name: "{{ group_id }}"
+        group: "{{ user_id }}"
+        system: yes
+        shell: "/sbin/nologin"
+        comment: "alertmanager nologin User"
+        createhome: "no"
+        state: present
+
+    - name: "download alertmanager source"
+      unarchive:
+        src: "https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz"
+        dest: /tmp/
+        remote_src: yes
+
+    - name: "Copy alertmanager binary to bin"
+      copy:
+        src: "/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64/alertmanager"
+        dest: "/usr/local/bin/alertmanager"
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        remote_src: yes
+        mode: 0755
+
+    - name: "Copy amtool binary to bin"
+      copy:
+        src: "/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64/amtool"
+        dest: "/usr/local/bin/amtool"
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        remote_src: yes
+        mode: 0755
+
+    - name: "creat alertmanager directory in /etc"
+      file:
+        path: "/etc/alertmanager"
+        state: directory
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        mode: 0755
+        recurse: yes
+
+    - name: "creat alertmanager data directory in /data/alertmanager"
+      file:
+        path: "/data/alertmanager/"
+        state: directory
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        mode: 0755
+        recurse: yes
+
+    - name: "Copy alertmanager config file to /etc/alertmanager"
+      copy:
+        src: "/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64/alertmanager.yml"
+        dest: "/etc/alertmanager/alertmanager.yml"
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        remote_src: yes
+        mode: 0755
+
+#    - name: "Delete alertmanager tmp folder"
+#      file:
+#        path: '/tmp/alertmanager-{{ alertmanager_version }}.linux-amd64'
+#        state: absent
+
+    - name: "copy alertmanager service-unit file to /etc/systemd/system/"
+      copy:
+        src: "alertmanager.service"
+        dest: "/etc/systemd/system/alertmanager.service"
+
+    - name: "restart daemon , enable and then start alertmanager.service"
+      systemd:
+        name: alertmanager.service
+        daemon_reload: yes
+        enabled: yes
+        state: started

@@ -1,0 +1,6 @@
+#---
+# vars file for prom
+prometheus_version: "2.24.1"
+user_id: "prometheus"
+group_id: "prometheus"
+ansible_user: "modir"

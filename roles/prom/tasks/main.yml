@@ -1,0 +1,76 @@
+---
+
+    - name: "Creating prometheus user group"
+      group: name="{{group_id}}"
+
+    - name: "Creating prometheus user"
+      user:
+        name: "{{ group_id }}"
+        group: "{{ user_id }}"
+        system: yes
+        shell: "/sbin/nologin"
+        comment: "prometheus nologin User"
+        createhome: "no"
+        state: present
+
+    - name: "download prometheus source"
+      unarchive:
+        src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Copy prometheus binary to bin
+      copy:
+        src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+        dest: "/usr/local/bin/prometheus"
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        remote_src: yes
+        mode: 0755
+    
+    - name: Copy prometool binary to bin"
+      copy:
+        src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
+        dest: "/usr/local/bin/promtool"
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        remote_src: yes
+        mode: 0755
+
+    - name: "creat prometheus directory in /etc"
+      file:
+        path: "/etc/prometheus"
+        state: directory
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        mode: 0775
+        recurse: yes
+
+    - name: "creat TSDB Related directory in /var/lib"
+      file:
+        path: "/var/lib/prometheus"
+        state: directory
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        mode: 0775
+        recurse: yes
+
+    - name: "Copy prometheus config file to /etc/prometheus"
+      copy:
+        src: "prometheus.yml"
+        dest: "/etc/prometheus/prometheus.yml"
+        owner: "{{ user_id }}"
+        group: "{{ group_id }}"
+        mode: 0755
+
+    - name: "copy prometheus service-unit file to /etc/systemd/system/"
+      copy:
+        src: "prometheus.service"
+        dest: "/etc/systemd/system/prometheus.service"
+
+    - name: "restart daemon , enable and then start prometheus.service"
+      systemd:
+        name: prometheus.service
+        daemon_reload: yes
+        enabled: yes
+        state: started
