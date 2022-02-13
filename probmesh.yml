@@ -10,3 +10,4 @@
     - telegraf
     - blackbox  
     - alertmanager
+    - system
