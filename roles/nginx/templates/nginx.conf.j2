@@ -1,0 +1,5 @@
+{% for host in hostvars %}
+{% if host in groups["ubuntu"] %}
+    server {{ hostvars[host]["ansible_hostname"] }} {{ hostvars[host]["ansible_facts"]["default_ipv4"]["address"] }}:80 check
+{% endif %}
+{% endfor %}
