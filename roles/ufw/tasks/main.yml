@@ -6,7 +6,7 @@
         rule: allow
         port: 9126
         proto: tcp
-        src: 172.19.160.14
+        src: x.x.x.x
         comment: Allow prom to node.exporter
         policy: allow
         state: reloaded

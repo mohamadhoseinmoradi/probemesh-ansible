@@ -3,4 +3,4 @@
 node_exporter_version: "1.0.1"
 user_id: "node_exporter"
 group_id: "node_exporter"
-ansible_user: "modir"
+ansible_user: "ansible"

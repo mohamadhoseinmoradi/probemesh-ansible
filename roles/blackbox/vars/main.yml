@@ -3,4 +3,4 @@
 blackbox_exporter_version: "0.18.0"
 user_id: "blackbox"
 group_id: "blackbox"
-ansible_user: "modir"
+ansible_user: "ansible"
