@@ -1,17 +1,12 @@
 ---
-  - name: testing j2 template
-    hosts: <host>
-    gather_facts: true
-
-    tasks:
-      - name: templating files to remotes
-        become: true 
-        template:
-          src: "{{ item }}.j2"
-          dest: "/tmp/{{ item }}.txt"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
-          mode: 0700
-        loop:
-          - instance
-          - properties
+  - name: templating files to remotes
+    become: true 
+    template:
+      src: "{{ item }}.j2"
+      dest: "/tmp/{{ item }}.txt"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0700
+    loop:
+      - instance
+      - properties
